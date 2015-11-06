@@ -1,6 +1,6 @@
 meta:
 
-  stemcell: (( merge || .meta.default_stemcell ))
+  stemcell: (( grab meta.default_stemcell ))
 
   default_stemcell:
     name: bosh-vsphere-esxi-ubuntu-trusty-go_agent
@@ -78,41 +78,40 @@ compilation:
     ram: 1024
     disk: 8192
     cpu: 2
-networks: (( merge ))
 
 resource_pools:
   - name: small_z1
-    cloud_properties: (( merge || meta.resource_pools.small_z1.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.small_z1.cloud_properties ))
 
   - name: small_z2
-    cloud_properties: (( merge || meta.resource_pools.small_z2.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.small_z2.cloud_properties ))
 
   - name: medium_z1
-    cloud_properties: (( merge || meta.resource_pools.medium_z1.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.medium_z1.cloud_properties ))
 
   - name: medium_z2
-    cloud_properties: (( merge || meta.resource_pools.medium_z2.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.medium_z2.cloud_properties ))
 
   - name: large_z1
-    cloud_properties: (( merge || meta.resource_pools.large_z1.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.large_z1.cloud_properties ))
 
   - name: large_z2
-    cloud_properties: (( merge || meta.resource_pools.large_z2.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.large_z2.cloud_properties ))
 
   - name: runner_z1
-    cloud_properties: (( merge || meta.resource_pools.runner_z1.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.runner_z1.cloud_properties ))
 
   - name: runner_z2
-    cloud_properties: (( merge || meta.resource_pools.runner_z2.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.runner_z2.cloud_properties ))
 
   - name: router_z1
-    cloud_properties: (( merge || meta.resource_pools.router_z1.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.router_z1.cloud_properties ))
 
   - name: router_z2
-    cloud_properties: (( merge || meta.resource_pools.router_z2.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.router_z2.cloud_properties ))
 
   - name: small_errand
-    cloud_properties: (( merge || meta.resource_pools.small_errand.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.small_errand.cloud_properties ))
 
 jobs:
   - name: nats_z1
@@ -215,13 +214,12 @@ jobs:
     instances: 1
 
 properties:
-  <<: (( merge ))
-  domain: (( jobs.ha_proxy_z1.networks.cf1.static_ips.[0] ".xip.io" ))
+  domain: (( concat jobs.ha_proxy_z1.networks.cf1.static_ips.[0] ".xip.io" ))
   system_domain_organization: pivotal
 
   ccdb:
     db_scheme: postgres
-    address: (( properties.databases.address ))
+    address: (( grab properties.databases.address ))
     port: 5524
     roles:
       - tag: admin
@@ -234,7 +232,7 @@ properties:
 
   uaadb:
     db_scheme: postgresql
-    address: (( properties.databases.address ))
+    address: (( grab properties.databases.address ))
     port: 5524
     roles:
       - tag: admin
@@ -247,7 +245,7 @@ properties:
 
   databases:
     db_scheme: postgres
-    address: (( jobs.postgres_z1.networks.cf1.static_ips.[0] ))
+    address: (( grab jobs.postgres_z1.networks.cf1.static_ips.[0] ))
     port: 5524
     roles:
       - tag: admin
@@ -263,7 +261,6 @@ properties:
       - tag: uaa
         name: uaadb
         citext: true
-    collect_statement_statistics: null
 
   uaa:
     catalina_opts: -Xmx768m -XX:MaxPermSize=256m

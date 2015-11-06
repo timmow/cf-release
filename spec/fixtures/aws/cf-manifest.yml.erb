@@ -49,10 +49,7 @@ jobs:
   update:
     max_in_flight: 1
     serial: true
-- default_networks:
-  - name: cf1
-    static_ips: null
-  instances: 0
+- instances: 0
   name: ha_proxy_z1
   networks:
   - name: cf1
@@ -297,8 +294,7 @@ jobs:
       allow_from_entries:
       - 10.10.16.0/20
       - 10.10.80.0/20
-      share: null
-    route_registrar:
+      ute_registrar:
       routes:
       - name: api
         port: 9022
@@ -341,7 +337,6 @@ jobs:
       allow_from_entries:
       - 10.10.16.0/20
       - 10.10.80.0/20
-      share: null
     route_registrar:
       routes:
       - name: api
@@ -395,7 +390,6 @@ jobs:
       allow_from_entries:
       - 10.10.16.0/20
       - 10.10.80.0/20
-      share: null
   resource_pool: small_z1
   templates:
   - name: cloud_controller_worker
@@ -420,7 +414,6 @@ jobs:
       allow_from_entries:
       - 10.10.16.0/20
       - 10.10.80.0/20
-      share: null
   resource_pool: small_z2
   templates:
   - name: cloud_controller_worker
@@ -582,9 +575,6 @@ jobs:
   update: {}
 - instances: 1
   name: router_z1
-  default_networks:
-    - name: cf1
-      static_ips: ~
   networks:
   - name: cf1
     static_ips:
@@ -607,9 +597,6 @@ jobs:
   update: {}
 - instances: 1
   name: router_z2
-  default_networks:
-    - name: cf2
-      static_ips: ~
   networks:
   - name: cf2
     static_ips:
@@ -1014,7 +1001,6 @@ properties:
     allow_from_entries:
     - 10.10.16.0/20
     - 10.10.80.0/20
-    share: null
   request_timeout_in_seconds: 900
   router:
     cipher_suites: null

@@ -9,23 +9,14 @@ meta:
   - name: cf
     version: latest
 
-name: (( meta.environment ))
+name: (( grab meta.environment ))
 
-director_uuid: (( merge ))
-
-releases: (( merge || meta.releases ))
-
-networks: (( merge ))
-
-jobs: (( merge ))
-
-properties: (( merge ))
+releases: (( grab meta.releases ))
 
 compilation:
   workers: 6
   network: cf1
   reuse_compilation_vms: true
-  cloud_properties: (( merge ))
 
 update:
   canaries: 1
@@ -34,4 +25,3 @@ update:
   update_watch_time: 5000-600000
   serial: true
 
-resource_pools: (( merge ))

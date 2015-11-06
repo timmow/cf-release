@@ -5,7 +5,7 @@ meta:
     provider: Local
     local_root: /var/vcap/store
 
-  stemcell: (( merge || .meta.default_stemcell ))
+  stemcell: (( grab meta.default_stemcell ))
 
   default_stemcell:
     name: bosh-warden-boshlite-ubuntu-trusty-go_agent
@@ -19,7 +19,6 @@ update:
   serial: true
 
 properties:
-  <<: (( merge ))
   ssl:
     skip_cert_verify: true
 
@@ -29,8 +28,6 @@ properties:
 
   dea_next:
     kernel_network_tuning_enabled: false
-    memory_mb: (( merge || nil ))
-    disk_mb: (( merge || nil ))
 
   loggregator_endpoint:
     shared_secret: loggregator-secret
@@ -39,10 +36,10 @@ properties:
     user: nats
     password: nats
     monitor_port: 4221
-    address: (( jobs.nats_z1.networks.cf1.static_ips.[0] ))
+    address: (( grab jobs.nats_z1.networks.cf1.static_ips.[0] ))
 
   hm9000:
-    url: (( "https://hm9000." domain ))
+    url: (( concat "https://hm9000." properties.domain ))
 
   cc:
     default_app_memory: 256
@@ -53,14 +50,14 @@ properties:
     db_encryption_key: db-encryption-key
 
     resource_pool:
-      fog_connection: (( meta.fog_config ))
+      fog_connection: (( grab meta.fog_config ))
     packages:
-      fog_connection: (( meta.fog_config ))
+      fog_connection: (( grab meta.fog_config ))
     droplets:
-      fog_connection: (( meta.fog_config ))
+      fog_connection: (( grab meta.fog_config ))
     buildpacks:
-      fog_connection: (( meta.fog_config ))
-    diego: (( merge || false ))
+      fog_connection: (( grab meta.fog_config ))
+    diego: false
 
   uaa:
     catalina_opts: -Xmx192m -XX:MaxPermSize=128m
@@ -93,7 +90,6 @@ properties:
     admin:
       client_secret: admin-secret
     clients:
-      <<: (( merge || nil ))
       login:
         secret: login-secret
       cc-service-dashboards:
@@ -124,7 +120,7 @@ properties:
 
   ccdb:
     db_scheme: postgres
-    address: (( properties.databases.address ))
+    address: (( grab properties.databases.address ))
     port: 5524
     roles:
       - tag: admin
@@ -137,7 +133,7 @@ properties:
 
   uaadb:
     db_scheme: postgresql
-    address: (( properties.databases.address ))
+    address: (( grab properties.databases.address ))
     port: 5524
     roles:
       - tag: admin
@@ -150,7 +146,7 @@ properties:
 
   databases:
     db_scheme: postgres
-    address: (( jobs.postgres_z1.networks.cf1.static_ips.[0] ))
+    address: (( grab jobs.postgres_z1.networks.cf1.static_ips.[0] ))
     port: 5524
     roles:
       - tag: admin
@@ -166,24 +162,22 @@ properties:
       - tag: uaa
         name: uaadb
         citext: true
-    collect_statement_statistics: null
 
   acceptance_tests:
-    <<: (( merge || nil ))
-    api:  (( "api." domain ))
-    apps_domain: (( domain ))
+    api:  (( concat  "api." properties.domain ))
+    apps_domain: (( grab properties.domain ))
     admin_user: admin
     admin_password: admin
     skip_ssl_validation: true
     nodes: 1
-    system_domain: (( domain ))
+    system_domain: (( grab properties.domain ))
     client_secret: gorouter-secret
     include_routing: true
     use_http: true
 
   smoke_tests:
-    api:  (( "api." domain ))
-    apps_domain: (( domain ))
+    api:  (( concat  "api." properties.domain ))
+    apps_domain: (( grab properties.domain ))
     user: admin
     password: admin
     org: SMOKE_TEST_ORG
@@ -587,8 +581,7 @@ resource_pools:
     cloud_properties:
       name: random
 
-networks: (( merge || networks_default ))
-networks_default:
+networks:
 - name: cf1
   subnets:
   - cloud_properties:

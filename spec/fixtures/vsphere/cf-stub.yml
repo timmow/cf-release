@@ -3,19 +3,24 @@
 ---
 director_uuid: DIRECTOR_UUID
 
+meta:
+  environment: ENVIRONMENT
+
 networks:
 - name: cf1
   subnets:
     - cloud_properties:
+      range: 0.0.0.0/24
       static:
       - 0.0.0.0 - 0.0.0.26
 - name: cf2
   subnets:
     - cloud_properties:
+      range: 0.0.1.0/24
       static:
       - 0.0.1.0 - 0.0.1.26
 jobs:
-  ha_proxy_z1:
+  - name: ha_proxy_z1
     properties:
       ha_proxy:
         disable_http: true

@@ -1,15 +1,15 @@
 meta:
   zones:
-    z1: (( properties.template_only.aws.availability_zone ))
-    z2: (( properties.template_only.aws.availability_zone2 ))
+    z1: (( grab properties.template_only.aws.availability_zone ))
+    z2: (( grab properties.template_only.aws.availability_zone2 ))
 
   fog_config:
     provider: AWS
-    aws_access_key_id: (( properties.template_only.aws.access_key_id ))
-    aws_secret_access_key: (( properties.template_only.aws.secret_access_key ))
+    aws_access_key_id: (( grab properties.template_only.aws.access_key_id ))
+    aws_secret_access_key: (( grab properties.template_only.aws.secret_access_key ))
     region: us-east-1
 
-  stemcell: (( merge || .meta.default_stemcell ))
+  stemcell: (( grab meta.default_stemcell ))
 
   default_stemcell:
     name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
@@ -17,9 +17,6 @@ meta:
 
 
 properties:
-  <<: (( merge ))
-  template_only: (( merge ))
-
   logger_endpoint:
     port: 4443
 
@@ -30,13 +27,13 @@ properties:
 
   cc:
     resource_pool:
-      fog_connection: (( meta.fog_config ))
+      fog_connection: (( grab meta.fog_config ))
     packages:
-      fog_connection: (( meta.fog_config ))
+      fog_connection: (( grab meta.fog_config ))
     droplets:
-      fog_connection: (( meta.fog_config ))
+      fog_connection: (( grab meta.fog_config ))
     buildpacks:
-      fog_connection: (( meta.fog_config ))
+      fog_connection: (( grab meta.fog_config ))
 
   uaa:
     catalina_opts: -Xmx768m -XX:MaxPermSize=256m
@@ -45,15 +42,12 @@ properties:
     deny_networks:
       - 169.254.0.0/16 # AWS Status
       - 10.10.0.0/16
-    allow_networks: (( merge || ["10.10.0.2/32"] )) # Amazon DNS
+    allow_networks: ["10.10.0.2/32"] # Amazon DNS
 
 compilation:
   cloud_properties:
     instance_type: c3.large
-    availability_zone: (( meta.zones.z1 ))
-
-
-networks: (( merge ))
+    availability_zone: (( grab meta.zones.z1 ))
 
 
 resource_pools:
@@ -63,7 +57,7 @@ resource_pools:
       ephemeral_disk:
         size: 10_240
         type: gp2
-      availability_zone: (( meta.zones.z1 ))
+      availability_zone: (( grab meta.zones.z1 ))
 
   - name: small_z2
     cloud_properties:
@@ -71,7 +65,7 @@ resource_pools:
       ephemeral_disk:
         size: 10_240
         type: gp2
-      availability_zone: (( meta.zones.z2 ))
+      availability_zone: (( grab meta.zones.z2 ))
 
   - name: medium_z1
     cloud_properties:
@@ -79,7 +73,7 @@ resource_pools:
       ephemeral_disk:
         size: 10_240
         type: gp2
-      availability_zone: (( meta.zones.z1 ))
+      availability_zone: (( grab meta.zones.z1 ))
 
   - name: medium_z2
     cloud_properties:
@@ -87,7 +81,7 @@ resource_pools:
       ephemeral_disk:
         size: 10_240
         type: gp2
-      availability_zone: (( meta.zones.z2 ))
+      availability_zone: (( grab meta.zones.z2 ))
 
   - name: large_z1
     cloud_properties:
@@ -95,7 +89,7 @@ resource_pools:
       ephemeral_disk:
         size: 65_536
         type: gp2
-      availability_zone: (( meta.zones.z1 ))
+      availability_zone: (( grab meta.zones.z1 ))
 
   - name: large_z2
     cloud_properties:
@@ -103,7 +97,7 @@ resource_pools:
       ephemeral_disk:
         size: 65_536
         type: gp2
-      availability_zone: (( meta.zones.z2 ))
+      availability_zone: (( grab meta.zones.z2 ))
 
   - name: runner_z1
     cloud_properties:
@@ -111,7 +105,7 @@ resource_pools:
       ephemeral_disk:
         size: 102_400
         type: gp2
-      availability_zone: (( meta.zones.z1 ))
+      availability_zone: (( grab meta.zones.z1 ))
 
   - name: runner_z2
     cloud_properties:
@@ -119,7 +113,7 @@ resource_pools:
       ephemeral_disk:
         size: 102_400
         type: gp2
-      availability_zone: (( meta.zones.z2 ))
+      availability_zone: (( grab meta.zones.z2 ))
 
   - name: router_z1
     cloud_properties:
@@ -127,8 +121,8 @@ resource_pools:
       ephemeral_disk:
         size: 10_240
         type: gp2
-      availability_zone: (( meta.zones.z1 ))
-      elbs: (( merge || ["cfrouter"] ))
+      availability_zone: (( grab meta.zones.z1 ))
+      elbs: ["cfrouter"]
 
   - name: router_z2
     cloud_properties:
@@ -136,8 +130,8 @@ resource_pools:
       ephemeral_disk:
         size: 10_240
         type: gp2
-      availability_zone: (( meta.zones.z2 ))
-      elbs: (( merge || ["cfrouter"] ))
+      availability_zone: (( grab meta.zones.z2 ))
+      elbs: ["cfrouter"]
 
   - name: small_errand
     cloud_properties:
@@ -145,12 +139,12 @@ resource_pools:
       ephemeral_disk:
         size: 10_240
         type: gp2
-      availability_zone: (( meta.zones.z1 ))
+      availability_zone: (( grab meta.zones.z1 ))
 
   - name: xlarge_errand
     cloud_properties:
       instance_type: c3.xlarge
-      availability_zone: (( meta.zones.z1 ))
+      availability_zone: (( grab meta.zones.z1 ))
 
 # set up static IPs
 jobs:

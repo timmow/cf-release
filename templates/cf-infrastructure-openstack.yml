@@ -1,15 +1,9 @@
 meta:
-  releases: ~
-  environment: ~
-  networks: ~
-
-  stemcell: (( merge || .meta.default_stemcell ))
+  stemcell: (( grab meta.default_stemcell ))
 
   default_stemcell:
     name: bosh-openstack-kvm-ubuntu-trusty-go_agent
     version: latest
-
-  floating_static_ips: (( merge ))
 
   resource_pools:
     small:
@@ -22,25 +16,15 @@ meta:
       cloud_properties:
           instance_type: m1.large
 
-networks: (( merge ))
-
 properties:
-  <<: (( merge ))
   logger_endpoint:
     port: 4443
 
-  cc: (( merge ))
-
   uaa:
     catalina_opts: -Xmx768m -XX:MaxPermSize=256m
-    clients: (( merge ))
-
-  dea_next:
-    deny_networks: (( merge || nil ))
-    allow_networks: (( merge || nil ))
 
   ccdb:
-    address: (( jobs.postgres_z1.networks.cf1.static_ips.[0] ))
+    address: (( grab jobs.postgres_z1.networks.cf1.static_ips.[0] ))
     databases:
     - name: ccdb
       tag: cc
@@ -48,11 +32,10 @@ properties:
     port: 5524
     roles:
     - name: ccadmin
-      password: (( merge ))
       tag: admin
 
   uaadb:
-    address: (( jobs.postgres_z1.networks.cf1.static_ips.[0] ))
+    address: (( grab jobs.postgres_z1.networks.cf1.static_ips.[0] ))
     databases:
     - name: uaadb
       tag: uaa
@@ -60,20 +43,17 @@ properties:
     port: 5524
     roles:
     - name: uaaadmin
-      password: (( merge ))
       tag: admin
 
   databases:
     db_scheme: postgres
-    address: (( jobs.postgres_z1.networks.cf1.static_ips.[0] ))
+    address: (( grab jobs.postgres_z1.networks.cf1.static_ips.[0] ))
     port: 5524
     roles:
       - tag: admin
         name: ccadmin
-        password: (( merge ))
       - tag: admin
         name: uaaadmin
-        password: (( merge ))
     databases:
       - tag: cc
         name: ccdb
@@ -81,41 +61,40 @@ properties:
       - tag: uaa
         name: uaadb
         citext: true
-    collect_statement_statistics: null
 
 compilation:
-  cloud_properties: (( merge || meta.resource_pools.medium.cloud_properties ))
+  cloud_properties: (( grab meta.resource_pools.medium.cloud_properties ))
 
 resource_pools:
   - name: small_z1
-    cloud_properties: (( merge || meta.resource_pools.small.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.small.cloud_properties ))
 
   - name: small_z2
-    cloud_properties: (( merge || meta.resource_pools.small.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.small.cloud_properties ))
 
   - name: medium_z1
-    cloud_properties: (( merge || meta.resource_pools.medium.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.medium.cloud_properties ))
 
   - name: medium_z2
-    cloud_properties: (( merge || meta.resource_pools.medium.cloud_properties ))
+    cloud_properties: (( grab meta.resource_pools.medium.cloud_properties ))
 
   - name: large_z1
-    cloud_properties: (( merge || meta.resource_pools.large.cloud_properties  ))
+    cloud_properties: (( grab meta.resource_pools.large.cloud_properties  ))
 
   - name: large_z2
-    cloud_properties: (( merge || meta.resource_pools.large.cloud_properties  ))
+    cloud_properties: (( grab meta.resource_pools.large.cloud_properties  ))
 
   - name: runner_z1
-    cloud_properties: (( merge || meta.resource_pools.large.cloud_properties  ))
+    cloud_properties: (( grab meta.resource_pools.large.cloud_properties  ))
 
   - name: runner_z2
-    cloud_properties: (( merge || meta.resource_pools.large.cloud_properties  ))
+    cloud_properties: (( grab meta.resource_pools.large.cloud_properties  ))
 
   - name: router_z1
-    cloud_properties: (( merge || meta.resource_pools.medium.cloud_properties  ))
+    cloud_properties: (( grab meta.resource_pools.medium.cloud_properties  ))
 
   - name: router_z2
-    cloud_properties: (( merge || meta.resource_pools.medium.cloud_properties  ))
+    cloud_properties: (( grab meta.resource_pools.medium.cloud_properties  ))
 
 # This config is for the simplest Openstack config using just one AZ.
 # All values for "z2" and network "cf2" are set to null. They'll end up
@@ -125,10 +104,9 @@ jobs:
     instances: 1
     networks:
       - name: floating
-        static_ips: (( meta.floating_static_ips ))
+        static_ips: (( grab meta.floating_static_ips ))
       - name: cf1
         static_ips: (( static_ips(0) ))
-        default: (( merge || nil ))
 
   - name: nats_z1
     instances: 1

@@ -24,7 +24,7 @@ if [ "$infrastructure" != "aws" ] && \
   exit 1
 fi
 
-spiff merge \
+spruce merge --prune lamb_meta --prune meta \
   "${templates}/cf-deployment.yml" \
   "${templates}/cf-resource-pools.yml" \
   "${templates}/cf-jobs.yml" \
