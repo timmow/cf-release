@@ -1,0 +1,59 @@
+---
+meta:
+  release:
+    name: jimtest
+
+properties:
+  domain: test
+  nats:
+   password: natspass
+   user: natsuser
+  cc:
+    internal_api_password: testpassword
+    bulk_api_password: testpassword
+  loggregator_endpoint:
+    shared_secret: nosecrets
+        
+  template_only:
+    aws:
+      access_key_id: AABBCCDD
+      secret_access_key: EEFFGGHHII
+      availability_zone: eu-west-1a
+      availability_zone2: eu-west-1b
+
+    doppler_endpoint:
+      shared_secret: notasecret
+
+    etcd_metrics_server:
+      nats: 
+        password: natspass
+        username: natsuser
+
+    metron_endpoint:
+      shared_secret: suckypassword
+
+
+
+networks:
+- name: cf1
+  subnets:
+    - range: 10.0.10.0/24
+      gateway: 10.0.10.1
+      dns: [10.0.0.2]
+      reserved:
+      - 10.0.10.2 - 10.0.10.9
+      static:
+      - 10.0.10.10 - 10.0.10.40
+      cloud_properties:
+        subnet: blah
+- name: cf2
+  subnets:
+    - range: 10.0.11.0/24
+      gateway: 10.0.11.1
+      dns: [10.0.0.2]
+      reserved:
+      - 10.0.11.2 - 10.0.11.9
+      static:
+      - 10.0.11.10 - 10.0.11.40
+      cloud_properties:
+        subnet: blur
